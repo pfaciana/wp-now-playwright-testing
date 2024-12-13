@@ -1,6 +1,6 @@
 {
 	"name": "wp-now-playwright-testing",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Integrate WordPress Playground with Microsoft's Playwright for easy local end-to-end testing of plugins and themes.",
 	"author": "Phil Faciana <phil@renderdev.com> (https://renderdev.com/)",
 	"license": "MIT",

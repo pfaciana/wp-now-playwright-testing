@@ -8,7 +8,6 @@
 /build	export-ignore
 /composer.lock	export-ignore
 /node_modules	export-ignore
-/package.json	export-ignore
 /package-lock.json	export-ignore
 /yarn.lock	export-ignore
 
@@ -46,7 +45,6 @@
 /rector.php	export-ignore
 /spec	export-ignore
 /tests	export-ignore
-*CHANGELOG*	export-ignore
 
 # Development Configurations
 /.editorconfig	export-ignore

@@ -1,0 +1,91 @@
+# IDE & Editor Files
+.idea/
+.obsidian/
+.vscode/
+.vscode-test/
+.editorconfig
+.DS_Store
+Thumbs.db
+*~
+*.swp
+*.swo
+
+# Build & Development
+coverage/
+.nyc_output/
+lib-cov/
+*.lcov
+.cache/
+.temp/
+.parcel-cache/
+.serverless/
+
+# Dependencies
+node_modules/
+.pnp.*
+.yarn/
+.npm/
+.npmrc
+.yarnrc
+.nvmrc
+
+# Configuration Files
+.git/
+.circleci/
+.github/
+.gitlab/
+.jenkins/
+.travis.yml
+docker/
+docker-compose.yml
+Dockerfile
+
+# TypeScript
+typings/
+*.tsbuildinfo
+
+# Logs & Debug
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Runtime & Process
+pids/
+*.pid
+*.seed
+*.pid.lock
+.lock-wscript
+.node_repl_history
+.tern-port
+
+# Environment & Secrets
+.env*
+.secrets
+.vars
+.zipignore
+*.pem
+*.key
+config/secrets.*
+.keys
+
+# Testing
+spec/
+tests/
+tests/_data/cache/
+
+# Local Databases
+*.sql
+*.sqlite
+
+# Version Control
+.gitattributes
+.gitignore
+
+# Project Specific
+blueprint.json
+Makefile

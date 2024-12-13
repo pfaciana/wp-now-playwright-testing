@@ -39,6 +39,11 @@ node_modules/
 docker/
 docker-compose.yml
 Dockerfile
+jest.config.js
+vitest.config.js
+vitest.config.ts
+vitest.setup.ts
+test.config.js
 
 # TypeScript
 typings/

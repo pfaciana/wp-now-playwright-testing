@@ -45,6 +45,9 @@
 /rector.php	export-ignore
 /spec	export-ignore
 /tests	export-ignore
+/vitest.config.js export-ignore
+/vitest.config.ts export-ignore
+/vitest.setup.ts export-ignore
 
 # Development Configurations
 /.editorconfig	export-ignore

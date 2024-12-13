@@ -1,0 +1,69 @@
+{
+	"name": "wp-now-playwright-testing",
+	"version": "1.0.0",
+	"description": "Integrate WordPress Playground with Microsoft's Playwright for easy local end-to-end testing of plugins and themes.",
+	"author": "Phil Faciana <phil@renderdev.com> (https://renderdev.com/)",
+	"license": "MIT",
+	"homepage": "https://github.com/pfaciana/wp-now-playwright-testing",
+	"scripts": {
+		"wp-now-server": "node wp-now-webserver.js --wp=6.0.0",
+		"wp-now-server-env": "cross-env USE_VERSIONS=8165,8367,8266 node wp-now-webserver.js",
+		"wp-now-server-arg": "node wp-now-webserver.js --versions=8165,8367,8266",
+		"playwright-server": "node playwright-webserver.js",
+		"playwright-server-env": "cross-env RESET=1 CLEAN=0 node playwright-webserver.js",
+		"playwright-server-arg": "node playwright-webserver.js --reset=yes --clean=no",
+		"cleanup-simulate": "node cleanup.js -wp -wc -pw --simulate",
+		"cleanup": "node cleanup.js -wp -wc -pw",
+		"cleanup-simulate-all": "node cleanup.js -wp -wc -pw --all --simulate",
+		"cleanup-all": "node cleanup.js -wp -wc --all",
+		"test": "vitest"
+	},
+	"type": "module",
+	"main": "playground.config.js",
+	"extra": {
+		"scripts": {
+			"wp-now-server": "node node_modules/wp-now-playwright-testing/wp-now-webserver.js",
+			"wp-now-server-env": "cross-env USE_VERSIONS=8165,8367,8266 node node_modules/wp-now-playwright-testing/wp-now-webserver.js",
+			"wp-now-server-arg": "node node_modules/wp-now-playwright-testing/wp-now-webserver.js --versions=8165,8367,8266",
+			"playwright-server": "node node_modules/wp-now-playwright-testing/playwright-webserver.js",
+			"playwright-server-env": "cross-env RESET=1 CLEAN=0 node node_modules/wp-now-playwright-testing/playwright-webserver.js",
+			"playwright-server-arg": "node node_modules/wp-now-playwright-testing/playwright-webserver.js --reset=yes --clean=no",
+			"playwright-tests": "node node_modules/@playwright/test/cli.js test -c playwright.config.js",
+			"playwright-tests-env": "cross-env USE_VERSIONS=8165,8367,8266 node node_modules/@playwright/test/cli.js test -c playwright.config.js",
+			"playwright-upgrade": "npm install @playwright/test",
+			"setup": "node node_modules/wp-now-playwright-testing/setup-parallel-instances.js",
+			"setup-force": "node node_modules/wp-now-playwright-testing/setup-parallel-instances.js -f",
+			"cleanup-simulate": "node node_modules/wp-now-playwright-testing/cleanup.js -wp -wc -pw --simulate",
+			"cleanup": "node node_modules/wp-now-playwright-testing/cleanup.js -wp -wc -pw",
+			"cleanup-simulate-all": "node node_modules/wp-now-playwright-testing/cleanup.js -wp -wc -pw --all --simulate",
+			"cleanup-all": "node node_modules/wp-now-playwright-testing/cleanup.js -wp -wc --all"
+		}
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	},
+	"peerDependencies": {
+		"@playwright/test": "*",
+		"cross-env": "*"
+	},
+	"peerDependenciesMeta": {
+		"@playwright/test": {
+			"optional": true
+		},
+		"cross-env": {
+			"optional": true
+		}
+	},
+	"devDependencies": {
+		"@playwright/test": "^1",
+		"@types/node": "*",
+		"cross-env": "^7",
+		"vitest": "^2"
+	},
+	"dependencies": {
+		"@php-wasm/node": "1.0.2",
+		"@php-wasm/universal": "1.0.2",
+		"@wp-now/wp-now": "^0.1.74",
+		"is-port-reachable": "^4.0"
+	}
+}

@@ -51,7 +51,7 @@ export default defineConfig(config)
 3. Run your playwright tests with additional environment variables...
 
 ```bash
-cross-env USE_VERSIONS=8367,8266,8165 USE_BROWSER=chrome,firefox,webkit node node_modules/@playwright/test/cli.js test -c playwright.config.js
+cross-env USE_VERSIONS=8367,8266,8165 USE_BROWSER=chrome,firefox,safari node node_modules/@playwright/test/cli.js test -c playwright.config.js
 ```
 
 This command uses `cross-env` to set environment variables, but you can set the environment variables anyway you'd like. This will spin up multiple environments at once and test it based on your project's Playwright tests. If you don't add the environment variables, it will default to just chrome with the latest version of WordPress, and the oldest supported version of PHP. For a better of understanding of the customizations via environment variables, we'll need to go over some of the basics of how this works. Seen in the next section.
@@ -96,17 +96,17 @@ Let's explain how `--versions` shortcodes work...
 
 - the first 2 digits (required) represent the PHP version
 - the next 2 digits (optional) represent the WP version
-	- the patch version will always be the latest patch
-	- if these 2 digits are missing, it defaults to the latest version of WordPress
+  - the patch version will always be the latest patch
+  - if these 2 digits are missing, it defaults to the latest version of WordPress
 - the next 4/5 digits (optional) represent the port
-	- anything less than 4 or more than 5 digits will be ignored
-	- if missing, defaults to PHP and WP versions concatenated
-		- missing WordPress version defaults to the number 99 (as seen above)
+  - anything less than 4 or more than 5 digits will be ignored
+  - if missing, defaults to PHP and WP versions concatenated
+    - missing WordPress version defaults to the number 99 (as seen above)
 - RC and beta versions have exceptions
-	- You must use the full version (i.e. `6.7.1-RC1`) in replacement of the 3rd and 4th digits
-		- e.g. `836.7.1-RC1` or `806.7-beta3`
-	- The release candidate or beta version MUST be the latest optional available
-		- If you need an outdated version of WordPress, you must use the previous `--wp` flag
+  - You must use the full version (i.e. `6.7.1-RC1`) in replacement of the 3rd and 4th digits
+    - e.g. `836.7.1-RC1` or `806.7-beta3`
+  - The release candidate or beta version MUST be the latest optional available
+    - If you need an outdated version of WordPress, you must use the previous `--wp` flag
 
 For additional examples of how to use `--versions` shortcodes, see the `src/wp-now.test.js` test file
 
@@ -145,11 +145,10 @@ Like USE_VERSIONS/`--versions`, this is comma separated shortcodes. These are sl
 
 * `galaxy-s9+-l` for the  `Galaxy S9+ landscape` device
 * `chrome-hidpi` for the `Desktop Chrome HiDPI` device
-* 
-  For devices with multiple versions (like `iphone`, `ipad` and `pixel`)  if no version is specified, the latest version will be used.
+* For devices with multiple versions (like `iphone`, `ipad` and `pixel`)  if no version is specified, the latest version will be used.
   * So if `iPhone 15 Pro Max` is the highest version the iPhone at the time, `iphone` will be the same as `iphone-15-pro-max`
-  This is designed so the most used shortcodes would be... `chrome,firefox,safari,pixel,iphone,ipad`
-  You only need more complex shortcodes when your use case is more granular.
+    This is designed so the most used shortcodes would be... `chrome,firefox,safari,pixel,iphone,ipad`
+    You only need more complex shortcodes when your use case is more granular.
 
 For more details on how shortcode works, see the `src/playwright.test.js` test file.
 
@@ -199,7 +198,7 @@ You may want to run simulation mode `--simulate` first, to see what will actuall
 
 Inside the `package.json`, under `extra`, there are some example scripts that can be copied into your project to get you started.
 
-### Quick recap
+## Quick recap
 
 1. Install package
 
@@ -230,7 +229,7 @@ export default defineConfig(config)
 4. Run your playwright tests with environment variables set
 
 ```bash
-cross-env USE_VERSIONS=8367,8266,8165 USE_BROWSER=chrome,firefox,webkit node node_modules/@playwright/test/cli.js test -c playwright.config.js
+cross-env USE_VERSIONS=8367,8266,8165 USE_BROWSER=chrome,firefox,safari node node_modules/@playwright/test/cli.js test -c playwright.config.js
 ```
 
 That's it, you're done!

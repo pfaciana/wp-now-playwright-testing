@@ -198,6 +198,32 @@ You may want to run simulation mode `--simulate` first, to see what will actuall
 
 Inside the `package.json`, under `extra`, there are some example scripts that can be copied into your project to get you started.
 
+### Customizations without ENV and cli flags
+
+There is a third option that is less flexible. You can configure its usage from directly in the `playwright.config.js` file
+
+```js
+// playwright.config.js
+
+import { defineConfig } from '@playwright/test'
+import { getPlaywrightConfig, getWpNowConfigs } from 'wp-now-playwright-testing'
+
+await getWpNowConfigs({ versions: '8165,8367,8266' })
+const { projects, webServer } = await getPlaywrightConfig({ browsers: 'chrome,firefox,safari' })
+
+/* You can modify projects or webServer here for additional control */
+
+const config = {
+	/* Configure projects for major browsers */
+	projects,
+	/* Run your local dev server before starting the tests */
+	webServer,
+}
+export default defineConfig(config)
+```
+
+Normally the `getWpNowConfigs()` function is called behind the scenes using the ENV and/or cli flags. However, if you don't want to use it in that way, or you want to override it, you can call it directly (before calling `getPlaywrightConfig()` as shown above). You can also make customizations to the Playwright options here, as well. However, you may find this to be less flexible when automating different scripts.
+
 ## Quick recap
 
 1. Install package

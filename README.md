@@ -18,7 +18,7 @@ In its most basic form, all you have to do is run the setup script once per proj
 node node_modules/wp-now-playwright-testing/setup-parallel-instances.js
 ```
 
-...this brings the required files over to your local project to run multiple playgrounds at once.
+...this brings the required files into your local project to run multiple playgrounds at once.
 
 2. Add `wp-now-playwright-testing` to your Playwright config...
 
@@ -105,7 +105,7 @@ Let's explain how `--versions` shortcodes work...
 - RC and beta versions have exceptions
   - You must use the full version (i.e. `6.7.1-RC1`) in replacement of the 3rd and 4th digits
     - e.g. `836.7.1-RC1` or `806.7-beta3`
-  - The release candidate or beta version MUST be the latest optional available
+  - The release candidate or beta version MUST be the latest option available
     - If you need an outdated version of WordPress, you must use the previous `--wp` flag
 
 For additional examples of how to use `--versions` shortcodes, see the `src/wp-now.test.js` test file
@@ -223,6 +223,28 @@ export default defineConfig(config)
 ```
 
 Normally the `getWpNowConfigs()` function is called behind the scenes using the ENV and/or CLI flags. However, if you don't want to use it in that way, or you want to override it, you can call it directly (before calling `getPlaywrightConfig()` as shown above). You can also make customizations to the Playwright options here, as well. However, you may find this to be less flexible when automating different scripts.
+
+## Auto-activating Additional Plugins
+
+When testing your plugin with Playwright, you may need additional plugins to be automatically activated in your test environment. The `.wp-now/shared/force-install-plugin.php` file (copied during setup) allows you to configure this.
+
+To auto-activate additional plugins:
+
+1. Open `.wp-now/shared/force-install-plugin.php` in your project
+2. Locate the line with `$user_defined_plugins_to_activate = [ /* Enter the plugins directory here */ ];`
+3. Replace the comment with your plugin directory names (these should match the folder names of your plugins)
+
+For example, to auto-activate WooCommerce and Advanced Custom Fields plugins:
+
+```php
+$user_defined_plugins_to_activate = [ 'woocommerce', 'advanced-custom-fields' ];
+```
+
+> **NOTE:** This feature only activates plugins that are already installed in your WordPress Playground environment. It does not automatically download or install plugins. Make sure the plugins you want to activate are already present in the WordPress instance.
+>
+> This can be done either via the Blueprint file or the `.wp-now` shared folders utilized by this project.
+
+These plugins will be activated automatically when your test environment initializes, alongside your main plugin under test.
 
 ### File Synchronization for Server Share
 

@@ -2,15 +2,26 @@ name: Publish
 
 on:
   workflow_dispatch:
+    inputs:
+      force-release:
+        description: The type of release to force (patch, minor, major, "")
+        required: false
+        default: ""
+        type: choice
+        options:
+          - ""
+          - patch
+          - minor
+          - major
   push:
     branches:
       - master
 
 jobs:
-  sync-versions:
-    runs-on: ubuntu-20.04
+  get-release-tag:
+    runs-on: ubuntu-latest
     outputs:
-      tag-name: ${{ steps.sync_versions.outputs.tag-name }}
+      tag-name: ${{ steps.get_tag_name.outputs.tag-name }}
     permissions:
       contents: write
     steps:
@@ -26,34 +37,26 @@ jobs:
         with:
           json-files: package.json
           release-type: patch
+          force-release: ${{ github.event.inputs.force-release || '' }}
           commit-message: Update version to {version}
           tag-message: Release {tag}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEBUG_MODE: ${{ vars.DEBUG_MODE || '0' }}
 
-  get-tag-name:
-    needs: sync-versions
-    runs-on: ubuntu-20.04
-    outputs:
-      tag-name: ${{ steps.get_tag_name.outputs.tag-name }}
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
       - name: Get tag
         id: get_tag_name
         uses: pfaciana/get-tag-for-next-release@v1
         with:
-          match-tag: ${{ needs.sync-versions.outputs.tag-name || '' }}
+          match-tag: ${{ steps.sync_versions.outputs.tag-name || '' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEBUG_MODE: ${{ vars.DEBUG_MODE || '0' }}
 
-  create-release:
-    needs: get-tag-name
-    if: needs.get-tag-name.outputs.tag-name != ''
-    runs-on: ubuntu-20.04
+  create-release-and-publish:
+    needs: get-release-tag
+    if: needs.get-release-tag.outputs.tag-name != ''
+    runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
@@ -62,6 +65,7 @@ jobs:
         with:
           fetch-depth: 0  # Fetch all history for all branches and tags
           fetch-tags: true  # Fetch all tags
+          ref: ${{ github.ref }} # Get the latest code updated from the previous job
 
       - name: Create Changelog
         id: create_changelog
@@ -101,9 +105,19 @@ jobs:
         id: create_release
         uses: softprops/action-gh-release@v2
         with:
-          name: ${{ format('Release {0}', needs.get-tag-name.outputs.tag-name) }}
-          tag_name: ${{ needs.get-tag-name.outputs.tag-name }}
+          name: ${{ format('Release {0}', needs.get-release-tag.outputs.tag-name) }}
+          tag_name: ${{ needs.get-release-tag.outputs.tag-name }}
           body: ${{ steps.create_release_changelog.outputs.changelog || '' }}
           files: |
             CHANGELOG.md
             DEVELOPER_CHANGELOG.md
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Publish to NPM
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

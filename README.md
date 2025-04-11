@@ -224,7 +224,7 @@ export default defineConfig(config)
 
 Normally the `getWpNowConfigs()` function is called behind the scenes using the ENV and/or CLI flags. However, if you don't want to use it in that way, or you want to override it, you can call it directly (before calling `getPlaywrightConfig()` as shown above). You can also make customizations to the Playwright options here, as well. However, you may find this to be less flexible when automating different scripts.
 
-## Auto-activating Additional Plugins
+### Auto-activating Additional Plugins
 
 When testing your plugin with Playwright, you may need additional plugins to be automatically activated in your test environment. The `.wp-now/shared/force-install-plugin.php` file (copied during setup) allows you to configure this.
 

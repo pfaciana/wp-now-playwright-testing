@@ -224,6 +224,64 @@ export default defineConfig(config)
 
 Normally the `getWpNowConfigs()` function is called behind the scenes using the ENV and/or CLI flags. However, if you don't want to use it in that way, or you want to override it, you can call it directly (before calling `getPlaywrightConfig()` as shown above). You can also make customizations to the Playwright options here, as well. However, you may find this to be less flexible when automating different scripts.
 
+### File Synchronization for Server Share
+
+This project includes a file synchronization utility that automatically syncs files between your local shared directory and the server shared directory in the WordPress Playground environment.
+
+While `wp-now` makes a symbolic link for your theme or plugin (so it is not necessary to create an extra step to synchronize those files), the custom shared folder is not. This additional script takes care of that.
+
+The sync utility provides real-time feedback with emoji indicators:
+
+- 📑🟢 New file added
+- 📑🟡 File modified
+- 📑🔴 File deleted
+- 📂🟢 New directory added
+- 📂🔴 Directory deleted
+
+#### Using the File Sync Utility
+
+The simplest way to start file synchronization is to run the `sync-shared-dirs` example script from this project's package.json:
+
+```bash
+node node_modules/wp-now-playwright-testing/sync-shared-dirs.js
+```
+
+However, you may need to customize it with a configuration to match your local environment.
+
+#### Configuration Options
+
+You can customize the synchronization behavior using environment variables or command-line flags:
+
+| CLI Flag           | process.env.*    | Default Value    | Description                           |
+|--------------------|------------------|------------------|---------------------------------------|
+| `--local-root`     | `LOCAL_ROOT`     | `process.cwd()`  | Root directory of your local project  |
+| `--local-share`    | `LOCAL_SHARE`    | `.wp-now/shared` | Source directory to watch for changes |
+| `--server-share`   | `SERVER_SHARE`   | `.wp-now`        | Server directory to copy to           |
+| `--ignore-initial` | `IGNORE_INITIAL` | `true`           | Skip initial copy of existing files   |
+| `--verbose`        | `VERBOSE`        | `true`           | Show detailed logs of file changes    |
+
+#### Examples
+
+Custom local and server share directory: (Empty value means the root for either context)
+
+```bash
+cross-env LOCAL_SHARE=./my-files SERVER_SHARE= node sync-shared-dirs.js
+```
+
+Quiet mode (less verbose output):
+
+```bash
+cross-env VERBOSE=false node sync-shared-dirs.js
+```
+
+Initial sync of existing files:
+
+```bash
+cross-env IGNORE_INITIAL=false node sync-shared-dirs.js
+```
+
+The sync utility will maintain an active watch on your specified directories and automatically handle file creation, modification, and deletion events, ensuring your WordPress Playground environment stays in sync with your local development files.
+
 ## Quick recap
 
 1. Install package

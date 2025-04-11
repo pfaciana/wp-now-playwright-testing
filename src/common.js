@@ -1,6 +1,8 @@
 import { existsSync } from 'node:fs'
 import { readdir, readFile, rm } from 'node:fs/promises'
-import { join, resolve } from 'node:path'
+import { dirname, join, relative, resolve } from 'node:path'
+import fs from 'fs-extra'
+import chokidar from 'chokidar'
 
 export const args = process.argv.slice(2)
 
@@ -116,4 +118,81 @@ export async function loadJsonFile(path, options = 'utf8') {
 		}
 		throw error
 	}
+}
+
+export function watchAndSync(sourceDir, destinationDir, options = {}) {
+	const { verbose = true, ignoreInitial = true } = options
+
+	const config = { ignoreInitial }
+	const watcher = chokidar.watch(sourceDir, config)
+
+	console.log(`Watching for changes in...`)
+	console.log(`Local:  `, sourceDir)
+	console.log(`Server: `, destinationDir)
+	console.log(` `)
+
+	watcher
+		.on('ready', () => console.log('Initial scan complete. Ready for changes.'))
+		.on('add', async (filePath) => {
+			const relativePath = relative(sourceDir, filePath)
+			const destPath = join(destinationDir, relativePath)
+			try {
+				await fs.ensureDir(dirname(destPath))
+				await fs.copy(filePath, destPath)
+				if (verbose) console.log(`📑🟢 ./${relativePath.replace(/\\/g, '/')}`)
+			} catch (err) {
+				console.error(`Error copying file ${filePath} to ${destPath}:`, err)
+			}
+		})
+		.on('change', async (filePath) => {
+			const relativePath = relative(sourceDir, filePath)
+			const destPath = join(destinationDir, relativePath)
+			try {
+				await fs.ensureDir(dirname(destPath))
+				await fs.copy(filePath, destPath)
+				if (verbose) console.log(`📑🟡 ./${relativePath.replace(/\\/g, '/')}`)
+			} catch (err) {
+				console.error(`Error copying file ${filePath} to ${destPath}:`, err)
+			}
+		})
+		.on('unlink', async (filePath) => {
+			const relativePath = relative(sourceDir, filePath)
+			const destPath = join(destinationDir, relativePath)
+			try {
+				await fs.remove(destPath)
+				if (verbose) console.log(`📑🔴 ./${relativePath.replace(/\\/g, '/')}`)
+			} catch (err) {
+				console.error(`Error removing file ${destPath}:`, err)
+			}
+		})
+		.on('addDir', async (dirPath) => {
+			const relativePath = relative(sourceDir, dirPath)
+			const destPath = join(destinationDir, relativePath)
+			try {
+				await fs.ensureDir(destPath)
+				if (verbose) console.log(`📂🟢 ./${relativePath.replace(/\\/g, '/')}`)
+			} catch (err) {
+				console.error(`Error creating directory ${destPath}:`, err)
+			}
+		})
+		.on('unlinkDir', async (dirPath) => {
+			const relativePath = relative(sourceDir, dirPath)
+			const destPath = join(destinationDir, relativePath)
+			try {
+				await fs.remove(destPath)
+				if (verbose) console.log(`📂🔴 ./${relativePath.replace(/\\/g, '/')}`)
+			} catch (err) {
+				console.error(`Error removing directory ${destPath}:`, err)
+			}
+		})
+		.on('error', (error) => console.error('Watcher error:', error))
+
+	// Handle process termination gracefully
+	process.on('SIGINT', () => {
+		console.log('Stopping the watcher...')
+		watcher.close()
+		process.exit()
+	})
+
+	return watcher
 }
